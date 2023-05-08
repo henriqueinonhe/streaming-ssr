@@ -1,4 +1,5 @@
 import { hydrateRoot } from "react-dom/client";
 import { App } from "./App";
 
-hydrateRoot(document, <App />);
+const data = window.__INITIAL_DATA__;
+hydrateRoot(document, <App data={data} />);

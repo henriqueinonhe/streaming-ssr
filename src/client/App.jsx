@@ -1,4 +1,6 @@
-export const App = () => {
+export const App = ({ data }) => {
+  console.log(data);
+
   return (
     <html lang="en">
       <head>
@@ -8,7 +10,16 @@ export const App = () => {
         <title>SSR React</title>
         <script src="/client/index.js" defer></script>
       </head>
-      <body>Hello World!</body>
+      <body>
+        Hello World!
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          window.__INITIAL_DATA__ = ${JSON.stringify(data)}
+        `,
+          }}
+        />
+      </body>
     </html>
   );
 };

@@ -5,6 +5,7 @@ import { App } from "../client/App";
 const app = express();
 
 const resolvers = {
+  render: undefined,
   data: {},
 };
 
@@ -26,14 +27,23 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("/app", (req, res) => {
-  res.send(renderToString(<App />));
+app.get("/app", async (req, res) => {
+  const response = await fetch("http://localhost:3000/data/1");
+  const data = await response.text();
+
+  await new Promise((resolver) => {
+    resolvers.render = resolver;
+  });
+
+  res.send(renderToString(<App data={data} />));
 });
 
 app.get("/data/:id", async (req, res) => {
   const { id } = req.params;
 
-  await new Promise((resolver) => (resolvers.data[id] = resolver));
+  await new Promise((resolver) => {
+    resolvers.data[id] = resolver;
+  });
 
   res.setHeader("Content-Type", "application/json");
   res.send("Ok");
@@ -45,6 +55,12 @@ app.get("/remote-control/data/:id", (req, res) => {
   const { id } = req.params;
 
   resolvers.data[id]();
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/render", (req, res) => {
+  resolvers.render();
 
   res.send("Ok");
 });

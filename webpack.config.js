@@ -36,6 +36,7 @@ const serverConfig = {
   ...sharedConfig,
   entry: {
     index: "./src/server/index.jsx",
+    worker: "./src/server/worker.jsx",
   },
   output: {
     path: path.resolve(__dirname, "dist/server"),

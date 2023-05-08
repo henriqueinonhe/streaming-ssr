@@ -1,6 +1,6 @@
 import express from "express";
-import { renderToString } from "react-dom/server";
-import { App } from "../client/App";
+import { Worker } from "node:worker_threads";
+import { resolve } from "path";
 
 const app = express();
 
@@ -47,7 +47,15 @@ app.get("/app", async (req, res) => {
   //   resolvers.render = resolver;
   // });
 
-  res.send(renderToString(<App data={data} />));
+  // res.send(renderToString(<App data={data} />));
+
+  const worker = new Worker(resolve(__dirname, "./worker.js"), {
+    workerData: data,
+  });
+
+  worker.on("message", (html) => {
+    res.send(html);
+  });
 });
 
 app.get("/data/:id", async (req, res) => {
@@ -71,7 +79,7 @@ app.get("/remote-control/data/:id", (req, res) => {
   res.send("Ok");
 });
 
-app.get("/remote-control/render", (req, res) => {
+app.get("/remote-control/render:id", (req, res) => {
   resolvers.render();
 
   res.send("Ok");

@@ -1,6 +1,4 @@
 export const App = ({ data }) => {
-  console.log(data);
-
   return (
     <html lang="en">
       <head>
@@ -11,7 +9,6 @@ export const App = ({ data }) => {
         <script src="/client/index.js" defer></script>
       </head>
       <body>
-        Hello World!
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -19,7 +16,26 @@ export const App = ({ data }) => {
         `,
           }}
         />
+
+        <Block />
+        <Block />
+        <Block />
+        <Block />
+        <Block />
+        <Block />
       </body>
     </html>
+  );
+};
+
+const Block = () => {
+  return (
+    <div
+      style={{
+        width: 100,
+        height: 100,
+        border: "2px solid black",
+      }}
+    />
   );
 };

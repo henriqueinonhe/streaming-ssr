@@ -28,12 +28,24 @@ app.get("/", (req, res) => {
 });
 
 app.get("/app", async (req, res) => {
-  const response = await fetch("http://localhost:3000/data/1");
-  const data = await response.text();
+  const fetchData = (id) =>
+    fetch(`http://localhost:3000/data/${id}`).then((res) => {
+      console.log(`Data ${id} fetched!`);
+      return res.text();
+    });
 
-  await new Promise((resolver) => {
-    resolvers.render = resolver;
-  });
+  const data = await Promise.all([
+    fetchData(1),
+    fetchData(2),
+    fetchData(3),
+    fetchData(4),
+    fetchData(5),
+    fetchData(6),
+  ]);
+
+  // await new Promise((resolver) => {
+  //   resolvers.render = resolver;
+  // });
 
   res.send(renderToString(<App data={data} />));
 });

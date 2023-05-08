@@ -22,6 +22,7 @@ const sharedConfig = {
 const clientConfig = {
   ...sharedConfig,
   entry: {
+    host: "./src/client/host.jsx",
     index: "./src/client/index.jsx",
   },
   output: {

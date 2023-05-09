@@ -24,6 +24,8 @@ const clientConfig = {
   entry: {
     host: "./src/client/host.jsx",
     index: "./src/client/index.jsx",
+    worker: "./src/client/worker.js",
+    initiateWorker: "./src/client/initiateWorker.js",
   },
   output: {
     path: path.resolve(__dirname, "dist/client"),

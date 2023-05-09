@@ -14,8 +14,6 @@ export const Block = ({ id }) => {
   const [state, setState] = useState("Html");
   const [clicking, setClicking] = useState(false);
 
-  // useData(id);
-
   if (isClient && state !== "Ready") {
     const element = document.querySelector(`#base-${id}`);
 
@@ -36,7 +34,9 @@ export const Block = ({ id }) => {
 
   return (
     <>
-      {isServer && <Stall id={id} />}
+      {isServer && <BlockServerHydration id={id} />}
+
+      {state === "Html" && isClient && <BlockClientHydration id={id} />}
 
       <Base
         id={"base-" + id}
@@ -48,20 +48,18 @@ export const Block = ({ id }) => {
       >
         {state}
       </Base>
-
-      {/* <BlockHydration index={index} /> */}
     </>
   );
 };
 
-const Stall = ({ id }) => {
+const BlockServerHydration = ({ id }) => {
   const { sharedRenderArray } = serverWorkerData;
   const index = Number(id) - 1;
 
   if (!sharedRenderArray[index]) {
     sleep(30);
 
-    return <Stall id={id} />;
+    return <BlockServerHydration id={id} />;
   }
 
   // This is needed because both console.log
@@ -72,12 +70,16 @@ const Stall = ({ id }) => {
   return null;
 };
 
-// const BlockHydration = ({ index }) => {
-//   if (isServer || sharedArray[index]) {
-//     return null;
-//   }
+const BlockClientHydration = ({ id }) => {
+  const index = Number(id) - 1;
 
-//   sleep(20);
+  if (!window.clientSharedArray[index]) {
+    sleep(30);
 
-//   return <BlockHydration index={index} />;
-// };
+    return <BlockClientHydration id={id} />;
+  }
+
+  console.log(`Block ${index + 1} hydrated!`);
+
+  return null;
+};

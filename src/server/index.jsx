@@ -13,7 +13,21 @@ const resolvers = {
 const sharedRenderBuffer = new SharedArrayBuffer(6);
 const sharedRenderArray = new Int8Array(sharedRenderBuffer);
 
+const setArrayBufferCompatibilityHeaders = (res) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+};
+
+app.use((req, res, next) => {
+  setArrayBufferCompatibilityHeaders(res);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 app.get("/", (req, res) => {
+  res.setHeader("Content-Type", "text/html");
+
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -99,6 +113,28 @@ app.get("/client/index.js", async (req, res) => {
   res.sendFile(resolve(__dirname, "../../dist/client/index.js"));
 });
 
+const sseConnections = [];
+
+app.get("/sse", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  const connection = {
+    send: (id) => res.write(`event: message\ndata: ${id}\n\n`),
+    close: () => res.end(),
+  };
+
+  req.on("close", () => {
+    const index = sseConnections.indexOf(connection);
+    sseConnections.splice(index, 1);
+    connection.close();
+  });
+
+  sseConnections.push(connection);
+});
+
 // Remote Control
 
 app.get("/remote-control/data/:id", (req, res) => {
@@ -126,6 +162,14 @@ app.get("/remote-control/send-html", (req, res) => {
 
 app.get("/remote-control/bundle", (req, res) => {
   resolvers.bundle();
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/hydrate/:id", (req, res) => {
+  const { id } = req.params;
+
+  sseConnections.forEach((connection) => connection.send(id));
 
   res.send("Ok");
 });

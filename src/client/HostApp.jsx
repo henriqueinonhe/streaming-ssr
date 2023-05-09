@@ -35,6 +35,8 @@ export const HostApp = () => {
               height: "100%",
             }}
             src="http://a.localhost:3000/app"
+            // Needed to have access to SharedArrayBuffer
+            allow="cross-origin-isolated"
           />
         </div>
 

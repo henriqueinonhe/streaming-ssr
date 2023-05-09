@@ -13,7 +13,13 @@ export const App = ({ data }) => {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>SSR React</title>
-        <script src="/client/index.js" defer></script>
+        <script src="/client/index.js" defer />
+        {/* 
+          We have to do load this script here, synchronously so that 
+          it starts the worker thread before the React app starts,
+          otherwise it gets blocked
+        */}
+        <script src="/client/initiateWorker.js" />
         <style
           dangerouslySetInnerHTML={{
             __html: `

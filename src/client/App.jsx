@@ -1,12 +1,6 @@
-import { isServer, sleep } from "./utils";
-
-let workerData;
-let writeSync;
-
-if (isServer) {
-  workerData = require("worker_threads").workerData;
-  writeSync = require("fs").writeSync;
-}
+import { Block } from "./components/Block";
+import { Suspense } from "react";
+import { Spinner } from "./components/Spinner";
 
 export const App = ({ data }) => {
   return (
@@ -27,46 +21,37 @@ export const App = ({ data }) => {
           }}
         />
 
-        <Block id="1" />
-        <Block id="2" />
-        <Block id="3" />
-        <Block id="4" />
-        <Block id="5" />
-        <Block id="6" />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          <Suspense fallback={<Spinner label="1" />}>
+            <Block id={"1"} />
+          </Suspense>
+
+          <Suspense fallback={<Spinner label="2" />}>
+            <Block id={"2"} />
+          </Suspense>
+
+          <Suspense fallback={<Spinner label="3" />}>
+            <Block id={"3"} />
+          </Suspense>
+
+          <Suspense fallback={<Spinner label="4" />}>
+            <Block id={"4"} />
+          </Suspense>
+
+          <Suspense fallback={<Spinner label="5" />}>
+            <Block id={"5"} />
+          </Suspense>
+
+          <Suspense fallback={<Spinner label="6" />}>
+            <Block id={"6"} />
+          </Suspense>
+        </div>
       </body>
     </html>
   );
-};
-
-const Block = ({ id }) => {
-  return (
-    <>
-      {isServer && <Stall id={id} />}
-      <div
-        style={{
-          width: 100,
-          height: 100,
-          border: "2px solid black",
-        }}
-      />
-    </>
-  );
-};
-
-const Stall = ({ id }) => {
-  const { sharedRenderArray } = workerData;
-  const index = Number(id) - 1;
-
-  if (!sharedRenderArray[index]) {
-    sleep(30);
-
-    return <Stall id={id} />;
-  }
-
-  // This is needed because both console.log
-  // and stdout.write are NON blocking and here
-  // we need a blocking behavior
-  writeSync(1, `Block ${id} rendered!\n`);
-
-  return null;
 };

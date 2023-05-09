@@ -17,9 +17,26 @@ export const HostApp = () => {
       <div
         style={{
           display: "flex",
+          width: "100%",
+          height: "100%",
         }}
       >
-        <iframe src="http://a.localhost:3000/app" />
+        <div
+          style={{
+            width: "70%",
+            height: "100%",
+            flexShrink: 0,
+          }}
+        >
+          <iframe
+            style={{
+              border: "none",
+              width: "100%",
+              height: "100%",
+            }}
+            src="http://a.localhost:3000/app"
+          />
+        </div>
 
         <ControlPanel />
       </div>

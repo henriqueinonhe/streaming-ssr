@@ -21,9 +21,25 @@ app.get("/", (req, res) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>SPA React</title>
       <script src="/client/host.js" defer></script>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          position: relative;
+        }
+
+        html, body {
+          height: 100%;
+        }
+
+        #root {
+          height: 100%;
+          overflow: hidden;
+        }
+      </style>
     </head>
-    <body>
-      <div id="root"></div> 
+    <body><div id="root"></div> 
     </body>
     </html>
   `);

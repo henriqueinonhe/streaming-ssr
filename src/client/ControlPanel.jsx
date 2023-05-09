@@ -1,4 +1,8 @@
 export const ControlPanel = () => {
+  const sendHtml = () => {
+    fetch("/remote-control/send-html");
+  };
+
   return (
     <div
       style={{
@@ -29,6 +33,17 @@ export const ControlPanel = () => {
         <Menu id="4" />
         <Menu id="5" />
         <Menu id="6" />
+
+        <button
+          style={{
+            width: 300,
+            padding: 8,
+            marginTop: 12,
+          }}
+          onClick={sendHtml}
+        >
+          Send HTML
+        </button>
       </div>
     </div>
   );

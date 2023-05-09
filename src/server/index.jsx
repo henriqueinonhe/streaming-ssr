@@ -6,6 +6,7 @@ const app = express();
 
 const resolvers = {
   data: {},
+  html: undefined,
 };
 
 const sharedRenderBuffer = new SharedArrayBuffer(6);
@@ -68,7 +69,11 @@ app.get("/app", async (req, res) => {
     },
   });
 
-  worker.on("message", (html) => {
+  worker.on("message", async (html) => {
+    await new Promise((resolver) => {
+      resolvers.html = resolver;
+    });
+
     res.send(html);
   });
 });
@@ -99,6 +104,12 @@ app.get("/remote-control/render/:id", (req, res) => {
 
   const index = Number(id) - 1;
   sharedRenderArray[index] = 1;
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/send-html", (req, res) => {
+  resolvers.html();
 
   res.send("Ok");
 });

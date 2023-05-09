@@ -29,7 +29,7 @@ const clientConfig = {
     path: path.resolve(__dirname, "dist/client"),
     clean: true,
   },
-  target: "web",
+  target: "node",
 };
 
 const serverConfig = {

@@ -1,8 +1,4 @@
 export const ControlPanel = () => {
-  const finishRendering = () => {
-    fetch("/remote-control/render");
-  };
-
   return (
     <div
       style={{
@@ -15,7 +11,6 @@ export const ControlPanel = () => {
       <Menu id="4" />
       <Menu id="5" />
       <Menu id="6" />
-      {/* <button onClick={finishRendering}>Finish Rendering</button> */}
     </div>
   );
 };
@@ -25,10 +20,15 @@ const Menu = ({ id }) => {
     fetch(`/remote-control/data/${id}`);
   };
 
+  const finishRendering = () => {
+    fetch(`/remote-control/render/${id}`);
+  };
+
   return (
     <>
       <h2>{id}</h2>
       <button onClick={finishDataFetching}>Finish Data Fetching</button>
+      <button onClick={finishRendering}>Finish Rendering</button>
     </>
   );
 };

@@ -5,9 +5,11 @@ import { resolve } from "path";
 const app = express();
 
 const resolvers = {
-  render: undefined,
   data: {},
 };
+
+const sharedRenderBuffer = new SharedArrayBuffer(6);
+const sharedRenderArray = new Int8Array(sharedRenderBuffer);
 
 app.get("/", (req, res) => {
   res.send(`
@@ -43,14 +45,11 @@ app.get("/app", async (req, res) => {
     fetchData(6),
   ]);
 
-  // await new Promise((resolver) => {
-  //   resolvers.render = resolver;
-  // });
-
-  // res.send(renderToString(<App data={data} />));
-
   const worker = new Worker(resolve(__dirname, "./worker.js"), {
-    workerData: data,
+    workerData: {
+      data,
+      sharedRenderArray,
+    },
   });
 
   worker.on("message", (html) => {
@@ -79,8 +78,11 @@ app.get("/remote-control/data/:id", (req, res) => {
   res.send("Ok");
 });
 
-app.get("/remote-control/render:id", (req, res) => {
-  resolvers.render();
+app.get("/remote-control/render/:id", (req, res) => {
+  const { id } = req.params;
+
+  const index = Number(id) - 1;
+  sharedRenderArray[index] = 1;
 
   res.send("Ok");
 });

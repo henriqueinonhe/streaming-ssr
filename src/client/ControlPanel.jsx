@@ -3,6 +3,16 @@ export const ControlPanel = () => {
     fetch("/remote-control/send-html");
   };
 
+  const sendBundle = () => {
+    fetch("/remote-control/bundle");
+  };
+
+  const buttonStyle = {
+    width: 300,
+    padding: 8,
+    marginTop: 12,
+  };
+
   return (
     <div
       style={{
@@ -34,15 +44,12 @@ export const ControlPanel = () => {
         <Menu id="5" />
         <Menu id="6" />
 
-        <button
-          style={{
-            width: 300,
-            padding: 8,
-            marginTop: 12,
-          }}
-          onClick={sendHtml}
-        >
+        <button style={buttonStyle} onClick={sendHtml}>
           Send HTML
+        </button>
+
+        <button style={buttonStyle} onClick={sendBundle}>
+          Send Bundle
         </button>
       </div>
     </div>

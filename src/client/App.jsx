@@ -1,32 +1,9 @@
-import { Suspense, lazy } from "react";
-import { Spinner } from "./components/Spinner";
-import { isServer } from "./utils";
-
-import("./components/blocks/First");
-import("./components/blocks/Second");
-import("./components/blocks/Third");
-import("./components/blocks/Fourth");
-import("./components/blocks/Fifth");
-import("./components/blocks/Sixth");
-
-const First = isServer
-  ? require("./components/blocks/First").default
-  : lazy(() => import("./components/blocks/First"));
-const Second = isServer
-  ? require("./components/blocks/Second").default
-  : lazy(() => import("./components/blocks/Second"));
-const Third = isServer
-  ? require("./components/blocks/Third").default
-  : lazy(() => import("./components/blocks/Third"));
-const Fourth = isServer
-  ? require("./components/blocks/Fourth").default
-  : lazy(() => import("./components/blocks/Fourth"));
-const Fifth = isServer
-  ? require("./components/blocks/Fifth").default
-  : lazy(() => import("./components/blocks/Fifth"));
-const Sixth = isServer
-  ? require("./components/blocks/Sixth").default
-  : lazy(() => import("./components/blocks/Sixth"));
+import { First } from "./components/blocks/First";
+import { Second } from "./components/blocks/Second";
+import { Third } from "./components/blocks/Third";
+import { Fourth } from "./components/blocks/Fourth";
+import { Fifth } from "./components/blocks/Fifth";
+import { Sixth } from "./components/blocks/Sixth";
 
 export const App = ({ data }) => {
   return (
@@ -53,29 +30,17 @@ export const App = ({ data }) => {
             flexWrap: "wrap",
           }}
         >
-          <Suspense fallback={<Spinner label="1" />}>
-            <First />
-          </Suspense>
+          <First />
 
-          <Suspense fallback={<Spinner label="2" />}>
-            <Second />
-          </Suspense>
+          <Second />
 
-          <Suspense fallback={<Spinner label="3" />}>
-            <Third />
-          </Suspense>
+          <Third />
 
-          <Suspense fallback={<Spinner label="4" />}>
-            <Fourth />
-          </Suspense>
+          <Fourth />
 
-          <Suspense fallback={<Spinner label="5" />}>
-            <Fifth />
-          </Suspense>
+          <Fifth />
 
-          <Suspense fallback={<Spinner label="6" />}>
-            <Sixth />
-          </Suspense>
+          <Sixth />
         </div>
       </body>
     </html>

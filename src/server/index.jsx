@@ -7,6 +7,7 @@ const app = express();
 const resolvers = {
   data: {},
   html: undefined,
+  bundle: undefined,
 };
 
 const sharedRenderBuffer = new SharedArrayBuffer(6);
@@ -20,7 +21,7 @@ app.get("/", (req, res) => {
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>SPA React</title>
+      <title>Streaming SSR</title>
       <script src="/client/host.js" defer></script>
       <style>
         * {
@@ -89,6 +90,15 @@ app.get("/data/:id", async (req, res) => {
   res.send("Ok");
 });
 
+app.get("/client/index.js", async (req, res) => {
+  await new Promise((resolver) => {
+    resolvers.bundle = resolver;
+  });
+
+  res.setHeader("Content-Type", "application/javascript");
+  res.sendFile(resolve(__dirname, "../../dist/client/index.js"));
+});
+
 // Remote Control
 
 app.get("/remote-control/data/:id", (req, res) => {
@@ -110,6 +120,12 @@ app.get("/remote-control/render/:id", (req, res) => {
 
 app.get("/remote-control/send-html", (req, res) => {
   resolvers.html();
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/bundle", (req, res) => {
+  resolvers.bundle();
 
   res.send("Ok");
 });

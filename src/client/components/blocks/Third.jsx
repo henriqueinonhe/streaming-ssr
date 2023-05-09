@@ -1,5 +1,5 @@
 import { Block } from "../Block";
 
-const Third = () => <Block id={"3"} />;
+export const Third = () => <Block id={"3"} />;
 
 export default Third;

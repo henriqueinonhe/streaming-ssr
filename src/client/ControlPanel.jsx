@@ -31,7 +31,7 @@ export const ControlPanel = () => {
     marginTop: 12,
   };
 
-  const debug = false;
+  const debug = true;
 
   return (
     <div

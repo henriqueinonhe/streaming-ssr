@@ -1,6 +1,8 @@
 import express from "express";
 import { Worker } from "node:worker_threads";
 import { resolve } from "path";
+import { App } from "../client/App";
+import { renderToPipeableStream } from "react-dom/server";
 
 const app = express();
 
@@ -62,35 +64,27 @@ app.get("/", (req, res) => {
 });
 
 app.get("/app", async (req, res) => {
-  const fetchData = (id) =>
-    fetch(`http://localhost:3000/data/${id}`).then((res) => {
-      console.log(`Data ${id} fetched!`);
-      return res.text();
-    });
+  // const worker = new Worker(resolve(__dirname, "./worker.js"), {
+  //   workerData: {
+  //     data,
+  //     sharedRenderArray,
+  //   },
+  // });
 
-  const data = await Promise.all([
-    fetchData(1),
-    fetchData(2),
-    fetchData(3),
-    fetchData(4),
-    fetchData(5),
-    fetchData(6),
-  ]);
-
-  const worker = new Worker(resolve(__dirname, "./worker.js"), {
-    workerData: {
-      data,
-      sharedRenderArray,
+  const { pipe } = renderToPipeableStream(<App />, {
+    bootstrapScripts: ["./client/index.js"],
+    onShellReady: () => {
+      pipe(res);
     },
   });
 
-  worker.on("message", async (html) => {
-    await new Promise((resolver) => {
-      resolvers.html = resolver;
-    });
+  // worker.on("message", async (html) => {
+  //   await new Promise((resolver) => {
+  //     resolvers.html = resolver;
+  //   });
 
-    res.send(html);
-  });
+  //   res.send(html);
+  // });
 });
 
 app.get("/data/:id", async (req, res) => {

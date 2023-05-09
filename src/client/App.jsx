@@ -4,8 +4,11 @@ import { Third } from "./components/blocks/Third";
 import { Fourth } from "./components/blocks/Fourth";
 import { Fifth } from "./components/blocks/Fifth";
 import { Sixth } from "./components/blocks/Sixth";
+import { Spinner } from "./components/Spinner";
+import { Suspense } from "react";
+import { RequestIdProvider } from "./components/RequestIdProvider";
 
-export const App = ({ data }) => {
+export const App = () => {
   return (
     <html lang="en">
       <head>
@@ -34,31 +37,37 @@ export const App = ({ data }) => {
         />
       </head>
       <body>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          window.__INITIAL_DATA__ = ${JSON.stringify(data)}
-        `,
-          }}
-        />
-
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
           }}
         >
-          <First />
+          <RequestIdProvider>
+            <Suspense fallback={<Spinner label="1" />}>
+              <First />
+            </Suspense>
 
-          <Second />
+            <Suspense fallback={<Spinner label="2" />}>
+              <Second />
+            </Suspense>
 
-          <Third />
+            <Suspense fallback={<Spinner label="3" />}>
+              <Third />
+            </Suspense>
 
-          <Fourth />
+            <Suspense fallback={<Spinner label="4" />}>
+              <Fourth />
+            </Suspense>
 
-          <Fifth />
+            <Suspense fallback={<Spinner label="5" />}>
+              <Fifth />
+            </Suspense>
 
-          <Sixth />
+            <Suspense fallback={<Spinner label="6" />}>
+              <Sixth />
+            </Suspense>
+          </RequestIdProvider>
         </div>
       </body>
     </html>

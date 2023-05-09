@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { isClient, isServer, sleep } from "../utils";
 import { Base } from "./Base";
+import { useData } from "../hooks/useData";
 
 let serverWorkerData;
 let writeSync;
@@ -11,6 +12,8 @@ if (isServer) {
 }
 
 export const Block = ({ id }) => {
+  const { clientSideCache } = useData(id);
+
   const [state, setState] = useState("Html");
   const [clicking, setClicking] = useState(false);
 
@@ -34,7 +37,7 @@ export const Block = ({ id }) => {
 
   return (
     <>
-      {isServer && <BlockServerHydration id={id} />}
+      {/* {isServer && <BlockServerHydration id={id} />} */}
 
       {state === "Html" && isClient && <BlockClientHydration id={id} />}
 
@@ -48,6 +51,8 @@ export const Block = ({ id }) => {
       >
         {state}
       </Base>
+
+      {clientSideCache}
     </>
   );
 };

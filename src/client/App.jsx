@@ -29,6 +29,13 @@ import("./components/blocks/Fifth");
 import("./components/blocks/Sixth");
 
 export const App = ({ data }) => {
+  if (isServer) {
+    // This is needed because both console.log
+    // and stdout.write are NON blocking and here
+    // we need a blocking behavior
+    writeSync(1, `Rendering shell on server!\n`);
+  }
+
   return (
     <html lang="en">
       <head>
@@ -109,7 +116,10 @@ const BlockServerRender = () => {
   // This is needed because both console.log
   // and stdout.write are NON blocking and here
   // we need a blocking behavior
-  writeSync(1, `Shell rendered!\n`);
+  writeSync(1, `Shell rendered on server!\n`);
+
+  // Reset shell render blocking
+  sharedRenderShellArray[0] = 0;
 
   return null;
 };

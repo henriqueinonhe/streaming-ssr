@@ -66,6 +66,8 @@ const sharedRenderShellBuffer = new SharedArrayBuffer(1);
 const sharedRenderShellArray = new Int8Array(sharedRenderShellBuffer);
 
 app.get("/app", async (req, res) => {
+  console.log("Fetching shell data!");
+
   const shellData = await fetch("http://localhost:3000/shell-data").then(
     (res) => {
       console.log("Shell data fetched!");
@@ -85,11 +87,24 @@ app.get("/app", async (req, res) => {
     worker.postMessage("Send shell!");
   };
 
-  worker.on("message", (chunk) => {
-    res.write(chunk);
+  res.on("drain", () => {
+    worker.postMessage({ type: "drain" });
   });
-  worker.on("exit", () => {
-    res.end();
+
+  res.on("error", (error) => {
+    worker.postMessage({ type: "error", data: error });
+  });
+
+  res.on("close", () => {
+    worker.postMessage({ type: "close" });
+  });
+
+  worker.on("message", (message) => {
+    if (message.type === "write") {
+      res.write(message.data);
+    } else if (message.type === "end") {
+      res.end();
+    }
   });
 });
 
@@ -104,9 +119,11 @@ app.get("/shell-data", async (req, res) => {
 app.get("/data/:id", async (req, res) => {
   const { id } = req.params;
 
+  console.log(`Fetching data for block ${id}!`);
   await new Promise((resolver) => {
     resolvers.data[id] = resolver;
   });
+  console.log(`Data for block ${id} fetched!`);
 
   res.setHeader("Content-Type", "application/json");
   res.send("Ok");

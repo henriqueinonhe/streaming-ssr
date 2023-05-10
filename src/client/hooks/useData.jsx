@@ -63,11 +63,8 @@ const ClientSideCache = ({ cacheKey, data }) => (
   />
 );
 
-const fetchData = (id) =>
-  fetch(`http://localhost:3000/data/${id}`).then((res) => {
-    // This is needed because both console.log
-    // and stdout.write are NON blocking and here
-    // we need a blocking behavior
-    console.log(`Data ${id} fetched!`);
+const fetchData = (id) => {
+  return fetch(`http://localhost:3000/data/${id}`).then((res) => {
     return res.text();
   });
+};

@@ -3,29 +3,49 @@ import { App } from "../client/App";
 import { parentPort, workerData } from "node:worker_threads";
 
 const run = async () => {
-  const { data, sharedRenderArray, sharedRenderShellArray } = workerData;
+  const { data, sharedRenderArray } = workerData;
+
+  const drainEventHandlers = [];
+  const errorEventHandlers = [];
+  const closeEventHandlers = [];
+  let sendShellResolver;
 
   const writableStreamLike = {
     write: (chunk) => {
-      parentPort.postMessage(chunk);
+      parentPort.postMessage({ type: "write", data: chunk });
     },
-    on: () => {},
-    end: () => {},
+    on: (event, handler) => {
+      if (event === "drain") {
+        drainEventHandlers.push(handler);
+      } else if (event === "error") {
+        errorEventHandlers.push(handler);
+      } else if (event === "close") {
+        closeEventHandlers.push(handler);
+      }
+    },
+    end: () => parentPort.postMessage({ type: "end" }),
   };
+
+  parentPort.on("message", (message) => {
+    if (message.type === "drain") {
+      drainEventHandlers.forEach((handler) => handler());
+    } else if (message.type === "error") {
+      errorEventHandlers.forEach((handler) => handler(message.data));
+    } else if (message.type === "close") {
+      closeEventHandlers.forEach((handler) => handler());
+    } else if (message === "Send shell!") {
+      sendShellResolver();
+    }
+  });
 
   const { pipe } = renderToPipeableStream(<App data={data} />, {
     bootstrapScripts: ["./client/index.js"],
     onShellReady: async () => {
       await new Promise((resolver) => {
-        parentPort.on("message", (message) => {
-          resolver();
-          parentPort.off("message");
-        });
+        sendShellResolver = resolver;
       });
 
       pipe(writableStreamLike);
-      // Reset shell render blocking
-      sharedRenderShellArray[0] = 0;
     },
   });
 

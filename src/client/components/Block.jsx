@@ -14,10 +14,18 @@ if (isServer) {
 export const Block = ({ id }) => {
   const { clientSideCache } = useData(id);
 
+  if (isServer) {
+    // This is needed because both console.log
+    // and stdout.write are NON blocking and here
+    // we need a blocking behavior
+    writeSync(1, `Rendering block ${id} on server!\n`);
+  }
+
   const [state, setState] = useState("Html");
   const [clicking, setClicking] = useState(false);
 
   if (isClient && state !== "Ready") {
+    console.log(`Hydrating block ${id}!`);
     const element = document.querySelector(`#base-${id}`);
 
     if (!element) return;
@@ -70,7 +78,7 @@ const BlockServerRender = ({ id }) => {
   // This is needed because both console.log
   // and stdout.write are NON blocking and here
   // we need a blocking behavior
-  writeSync(1, `Block ${id} rendered!\n`);
+  writeSync(1, `Block ${id} rendered on server!\n`);
 
   return null;
 };

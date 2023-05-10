@@ -79,7 +79,7 @@ export const ControlPanel = () => {
             </button>
 
             <button style={buttonStyle} onClick={finishRendering}>
-              Finish Rendering
+              Finish Rendering on Server
             </button>
           </>
         )}
@@ -89,11 +89,11 @@ export const ControlPanel = () => {
         </button>
 
         <button style={buttonStyle} onClick={finishShellRendering}>
-          Finish Shell Rendering
+          Finish Shell Rendering on Server
         </button>
 
         <button style={buttonStyle} onClick={sendShell}>
-          Send Shell
+          Send Shell HTML
         </button>
 
         <button style={buttonStyle} onClick={sendInitialBundle}>
@@ -141,7 +141,7 @@ const Menu = ({ id }) => {
       </button>
 
       <button style={buttonStyle} onClick={finishServerRendering}>
-        Finish Server Rendering
+        Finish Rendering on Server
       </button>
 
       <button style={buttonStyle} onClick={sendBundle}>

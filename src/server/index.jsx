@@ -62,11 +62,14 @@ app.get("/", (req, res) => {
 });
 
 app.get("/app", async (req, res) => {
-  const fetchData = (id) =>
-    fetch(`http://localhost:3000/data/${id}`).then((res) => {
-      console.log(`Data ${id} fetched!`);
+  const fetchData = (id) => {
+    console.log(`Data fetching for block ${id} initiated!`);
+
+    return fetch(`http://localhost:3000/data/${id}`).then((res) => {
+      console.log(`Data fetching for block ${id} finished!`);
       return res.text();
     });
+  };
 
   const data = await Promise.all([
     fetchData(1),
@@ -85,6 +88,8 @@ app.get("/app", async (req, res) => {
   });
 
   worker.on("message", async (html) => {
+    console.log("Sending HTML to client!");
+
     await new Promise((resolver) => {
       resolvers.html = resolver;
     });
@@ -105,6 +110,8 @@ app.get("/data/:id", async (req, res) => {
 });
 
 app.get("/client/index.js", async (req, res) => {
+  console.log("Sending bundle to client!");
+
   await new Promise((resolver) => {
     resolvers.bundle = resolver;
   });

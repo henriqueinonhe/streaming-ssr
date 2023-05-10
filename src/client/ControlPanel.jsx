@@ -121,7 +121,7 @@ const Menu = ({ id }) => {
       </button>
 
       <button style={buttonStyle} onClick={finishRendering}>
-        Finish Rendering
+        Finish Rendering on Server
       </button>
 
       <button style={buttonStyle} onClick={finishHydration}>

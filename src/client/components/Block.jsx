@@ -14,7 +14,15 @@ export const Block = ({ id }) => {
   const [state, setState] = useState("Html");
   const [clicking, setClicking] = useState(false);
 
+  if (isServer) {
+    // This is needed because both console.log
+    // and stdout.write are NON blocking and here
+    // we need a blocking behavior
+    writeSync(1, `Rendering block ${id}!\n`);
+  }
+
   if (isClient && state !== "Ready") {
+    console.log(`Hydrating block ${id}!`);
     const element = document.querySelector(`#base-${id}`);
 
     if (!element) return;

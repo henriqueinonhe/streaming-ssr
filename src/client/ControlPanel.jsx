@@ -1,4 +1,8 @@
 export const ControlPanel = () => {
+  const finishShellDataFetching = () => {
+    fetch("/remote-control/shell-data");
+  };
+
   const sendShell = () => {
     fetch("/remote-control/send-shell");
   };
@@ -79,6 +83,10 @@ export const ControlPanel = () => {
             </button>
           </>
         )}
+
+        <button style={buttonStyle} onClick={finishShellDataFetching}>
+          Finish Shell Data Fetching
+        </button>
 
         <button style={buttonStyle} onClick={sendShell}>
           Send Shell

@@ -7,6 +7,7 @@ import { renderToPipeableStream } from "react-dom/server";
 const app = express();
 
 const resolvers = {
+  shellData: undefined,
   shell: undefined,
   data: {},
   html: undefined,
@@ -72,7 +73,14 @@ app.get("/app", async (req, res) => {
   //   },
   // });
 
-  const { pipe } = renderToPipeableStream(<App />, {
+  const shellData = await fetch("http://localhost:3000/shell-data").then(
+    (res) => {
+      console.log("Shell data fetched!");
+      return res.text();
+    }
+  );
+
+  const { pipe } = renderToPipeableStream(<App data={shellData} />, {
     bootstrapScripts: ["./client/index.js"],
     onShellReady: async () => {
       await new Promise((resolver) => {
@@ -90,6 +98,14 @@ app.get("/app", async (req, res) => {
 
   //   res.send(html);
   // });
+});
+
+app.get("/shell-data", async (req, res) => {
+  await new Promise((resolver) => {
+    resolvers.shellData = resolver;
+  });
+
+  res.send("Ok");
 });
 
 app.get("/data/:id", async (req, res) => {
@@ -135,6 +151,12 @@ app.get("/sse", (req, res) => {
 });
 
 // Remote Control
+
+app.get("/remote-control/shell-data", (req, res) => {
+  resolvers.shellData();
+
+  res.send("Ok");
+});
 
 app.get("/remote-control/send-shell", (req, res) => {
   resolvers.shell();

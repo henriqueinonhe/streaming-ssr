@@ -8,7 +8,7 @@ import { Spinner } from "./components/Spinner";
 import { Suspense } from "react";
 import { RequestIdProvider } from "./components/RequestIdProvider";
 
-export const App = () => {
+export const App = ({ data }) => {
   return (
     <html lang="en">
       <head>

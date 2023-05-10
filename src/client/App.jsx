@@ -7,6 +7,16 @@ import { Sixth } from "./components/blocks/Sixth";
 import { Spinner } from "./components/Spinner";
 import { Suspense } from "react";
 import { RequestIdProvider } from "./components/RequestIdProvider";
+import { isServer } from "./utils";
+import { sleep } from "./utils";
+
+let serverWorkerData;
+let writeSync;
+
+if (isServer) {
+  serverWorkerData = require("worker_threads").workerData;
+  writeSync = require("fs").writeSync;
+}
 
 export const App = ({ data }) => {
   return (
@@ -68,8 +78,27 @@ export const App = ({ data }) => {
               <Sixth />
             </Suspense>
           </RequestIdProvider>
+
+          {isServer && <BlockServerRender />}
         </div>
       </body>
     </html>
   );
+};
+
+const BlockServerRender = () => {
+  const { sharedRenderShellArray } = serverWorkerData;
+
+  if (!sharedRenderShellArray[0]) {
+    sleep(30);
+
+    return <BlockServerRender />;
+  }
+
+  // This is needed because both console.log
+  // and stdout.write are NON blocking and here
+  // we need a blocking behavior
+  writeSync(1, `Shell rendered!\n`);
+
+  return null;
 };

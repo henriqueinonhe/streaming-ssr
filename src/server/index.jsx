@@ -1,8 +1,7 @@
 import express from "express";
+import { createWriteStream } from "node:fs";
 import { Worker } from "node:worker_threads";
 import { resolve } from "path";
-import { App } from "../client/App";
-import { renderToPipeableStream } from "react-dom/server";
 
 const app = express();
 
@@ -13,9 +12,6 @@ const resolvers = {
   html: undefined,
   bundle: undefined,
 };
-
-const sharedRenderBuffer = new SharedArrayBuffer(6);
-const sharedRenderArray = new Int8Array(sharedRenderBuffer);
 
 const setArrayBufferCompatibilityHeaders = (res) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
@@ -55,7 +51,7 @@ app.get("/", (req, res) => {
 
         #root {
           height: 100%;
-          overflow: hidden;
+          overflow-x: hidden;
         }
       </style>
     </head>
@@ -65,14 +61,12 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("/app", async (req, res) => {
-  // const worker = new Worker(resolve(__dirname, "./worker.js"), {
-  //   workerData: {
-  //     data,
-  //     sharedRenderArray,
-  //   },
-  // });
+const sharedRenderBuffer = new SharedArrayBuffer(6);
+const sharedRenderArray = new Int8Array(sharedRenderBuffer);
+const sharedRenderShellBuffer = new SharedArrayBuffer(1);
+const sharedRenderShellArray = new Int8Array(sharedRenderShellBuffer);
 
+app.get("/app", async (req, res) => {
   const shellData = await fetch("http://localhost:3000/shell-data").then(
     (res) => {
       console.log("Shell data fetched!");
@@ -80,24 +74,20 @@ app.get("/app", async (req, res) => {
     }
   );
 
-  const { pipe } = renderToPipeableStream(<App data={shellData} />, {
-    bootstrapScripts: ["./client/index.js"],
-    onShellReady: async () => {
-      await new Promise((resolver) => {
-        resolvers.shell = resolver;
-      });
-
-      pipe(res);
+  const worker = new Worker(resolve(__dirname, "./worker.js"), {
+    workerData: {
+      data: shellData,
+      sharedRenderArray,
+      sharedRenderShellArray,
     },
   });
 
-  // worker.on("message", async (html) => {
-  //   await new Promise((resolver) => {
-  //     resolvers.html = resolver;
-  //   });
-
-  //   res.send(html);
-  // });
+  worker.on("message", (chunk) => {
+    res.write(chunk);
+  });
+  worker.on("exit", () => {
+    res.end();
+  });
 });
 
 app.get("/shell-data", async (req, res) => {
@@ -154,6 +144,12 @@ app.get("/sse", (req, res) => {
 
 app.get("/remote-control/shell-data", (req, res) => {
   resolvers.shellData();
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/shell-render", (req, res) => {
+  sharedRenderShellArray[0] = 1;
 
   res.send("Ok");
 });

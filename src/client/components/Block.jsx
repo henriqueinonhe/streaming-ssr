@@ -57,14 +57,14 @@ export const Block = ({ id }) => {
   );
 };
 
-const BlockServerHydration = ({ id }) => {
+const BlockServerRender = ({ id }) => {
   const { sharedRenderArray } = serverWorkerData;
   const index = Number(id) - 1;
 
   if (!sharedRenderArray[index]) {
     sleep(30);
 
-    return <BlockServerHydration id={id} />;
+    return <BlockServerRender id={id} />;
   }
 
   // This is needed because both console.log

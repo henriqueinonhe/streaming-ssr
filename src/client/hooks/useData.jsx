@@ -6,7 +6,7 @@ const store = {};
 export const useData = (id) => {
   const requestId = useRequestId();
 
-  const cacheKey = `${id}-${requestId}`;
+  const cacheKey = `${requestId}-${id}`;
 
   if (isClient) {
     const serializedData = window.__DATA__[cacheKey];
@@ -57,7 +57,7 @@ const ClientSideCache = ({ cacheKey, data }) => (
         window.__DATA__ = {};
       }
 
-      window.__DATA__['${cacheKey}'] = ${JSON.stringify(data)};
+      window.__DATA__['${cacheKey}'] = JSON.stringify(${JSON.stringify(data)});
     `,
     }}
   />

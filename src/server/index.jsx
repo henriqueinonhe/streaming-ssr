@@ -9,7 +9,7 @@ const resolvers = {
   shellData: undefined,
   shell: undefined,
   data: {},
-  html: undefined,
+  html: {},
   bundle: undefined,
 };
 
@@ -177,12 +177,6 @@ app.get("/remote-control/render/:id", (req, res) => {
 
   const index = Number(id) - 1;
   sharedRenderArray[index] = 1;
-
-  res.send("Ok");
-});
-
-app.get("/remote-control/send-html", (req, res) => {
-  resolvers.html();
 
   res.send("Ok");
 });

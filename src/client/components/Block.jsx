@@ -37,9 +37,9 @@ export const Block = ({ id }) => {
 
   return (
     <>
-      {/* {isServer && <BlockServerHydration id={id} />} */}
+      {isServer && <BlockServerRender id={id} />}
 
-      {state === "Html" && isClient && <BlockClientHydration id={id} />}
+      {state === "Html" && isClient && <BlockHydration id={id} />}
 
       <Base
         id={"base-" + id}
@@ -75,13 +75,13 @@ const BlockServerRender = ({ id }) => {
   return null;
 };
 
-const BlockClientHydration = ({ id }) => {
+const BlockHydration = ({ id }) => {
   const index = Number(id) - 1;
 
   if (!window.clientSharedArray[index]) {
     sleep(30);
 
-    return <BlockClientHydration id={id} />;
+    return <BlockHydration id={id} />;
   }
 
   console.log(`Block ${index + 1} hydrated!`);

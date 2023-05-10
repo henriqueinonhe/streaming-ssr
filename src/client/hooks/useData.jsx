@@ -1,5 +1,11 @@
-import { isClient } from "../utils";
+import { isClient, isServer } from "../utils";
 import { useRequestId } from "./useRequestId";
+
+let writeSync;
+
+if (isServer) {
+  writeSync = require("fs").writeSync;
+}
 
 const store = {};
 
@@ -65,6 +71,9 @@ const ClientSideCache = ({ cacheKey, data }) => (
 
 const fetchData = (id) =>
   fetch(`http://localhost:3000/data/${id}`).then((res) => {
-    console.log(`Data ${id} fetched!`);
+    // This is needed because both console.log
+    // and stdout.write are NON blocking and here
+    // we need a blocking behavior
+    writeSync(1, `Data ${id} fetched!`);
     return res.text();
   });

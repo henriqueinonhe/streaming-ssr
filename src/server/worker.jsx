@@ -10,6 +10,7 @@ const run = async () => {
       parentPort.postMessage(chunk);
     },
     on: () => {},
+    end: () => {},
   };
 
   const { pipe } = renderToPipeableStream(<App data={data} />, {
@@ -29,12 +30,12 @@ const run = async () => {
   });
 
   // Reset render blocking
-  // sharedRenderArray[0] = 0;
-  // sharedRenderArray[1] = 0;
-  // sharedRenderArray[2] = 0;
-  // sharedRenderArray[3] = 0;
-  // sharedRenderArray[4] = 0;
-  // sharedRenderArray[5] = 0;
+  sharedRenderArray[0] = 0;
+  sharedRenderArray[1] = 0;
+  sharedRenderArray[2] = 0;
+  sharedRenderArray[3] = 0;
+  sharedRenderArray[4] = 0;
+  sharedRenderArray[5] = 0;
 };
 
 run();

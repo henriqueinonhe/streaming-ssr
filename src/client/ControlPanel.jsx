@@ -11,10 +11,6 @@ export const ControlPanel = () => {
     fetch("/remote-control/send-shell");
   };
 
-  const sendHtml = () => {
-    fetch("/remote-control/send-html");
-  };
-
   const sendBundle = () => {
     fetch("/remote-control/bundle");
   };
@@ -43,7 +39,7 @@ export const ControlPanel = () => {
     marginTop: 12,
   };
 
-  const debug = true;
+  const debug = false;
 
   return (
     <div
@@ -98,10 +94,6 @@ export const ControlPanel = () => {
 
         <button style={buttonStyle} onClick={sendShell}>
           Send Shell
-        </button>
-
-        <button style={buttonStyle} onClick={sendHtml}>
-          Send HTML
         </button>
 
         <button style={buttonStyle} onClick={sendBundle}>

@@ -1,4 +1,8 @@
 export const ControlPanel = () => {
+  const sendShell = () => {
+    fetch("/remote-control/send-shell");
+  };
+
   const sendHtml = () => {
     fetch("/remote-control/send-html");
   };
@@ -75,6 +79,10 @@ export const ControlPanel = () => {
             </button>
           </>
         )}
+
+        <button style={buttonStyle} onClick={sendShell}>
+          Send Shell
+        </button>
 
         <button style={buttonStyle} onClick={sendHtml}>
           Send HTML

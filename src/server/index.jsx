@@ -82,6 +82,10 @@ app.get("/app", async (req, res) => {
     },
   });
 
+  resolvers.shell = () => {
+    worker.postMessage("Send shell!");
+  };
+
   worker.on("message", (chunk) => {
     res.write(chunk);
   });

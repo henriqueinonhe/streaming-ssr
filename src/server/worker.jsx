@@ -15,9 +15,12 @@ const run = async () => {
   const { pipe } = renderToPipeableStream(<App data={data} />, {
     bootstrapScripts: ["./client/index.js"],
     onShellReady: async () => {
-      // await new Promise((resolver) => {
-      //   resolvers.shell = resolver;
-      // });
+      await new Promise((resolver) => {
+        parentPort.on("message", (message) => {
+          resolver();
+          parentPort.off("message");
+        });
+      });
 
       pipe(writableStreamLike);
       // Reset shell render blocking

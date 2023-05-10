@@ -20,6 +20,8 @@ const run = async () => {
       // });
 
       pipe(writableStreamLike);
+      // Reset shell render blocking
+      sharedRenderShellArray[0] = 0;
     },
   });
 

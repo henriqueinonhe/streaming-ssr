@@ -11,8 +11,8 @@ export const ControlPanel = () => {
     fetch("/remote-control/send-shell");
   };
 
-  const sendBundle = () => {
-    fetch("/remote-control/bundle");
+  const sendInitialBundle = () => {
+    fetch("/remote-control/initialBundle");
   };
 
   const finishDataFetching = () => {
@@ -96,8 +96,8 @@ export const ControlPanel = () => {
           Send Shell
         </button>
 
-        <button style={buttonStyle} onClick={sendBundle}>
-          Send Bundle
+        <button style={buttonStyle} onClick={sendInitialBundle}>
+          Send Initial Bundle
         </button>
       </div>
     </div>
@@ -109,8 +109,12 @@ const Menu = ({ id }) => {
     fetch(`/remote-control/data/${id}`);
   };
 
-  const finishRendering = () => {
+  const finishServerRendering = () => {
     fetch(`/remote-control/render/${id}`);
+  };
+
+  const sendBundle = () => {
+    fetch(`/remote-control/bundle/${id}`);
   };
 
   const finishHydration = () => {
@@ -136,8 +140,12 @@ const Menu = ({ id }) => {
         Finish Data Fetching
       </button>
 
-      <button style={buttonStyle} onClick={finishRendering}>
-        Finish Rendering
+      <button style={buttonStyle} onClick={finishServerRendering}>
+        Finish Server Rendering
+      </button>
+
+      <button style={buttonStyle} onClick={sendBundle}>
+        Send Bundle
       </button>
 
       <button style={buttonStyle} onClick={finishHydration}>

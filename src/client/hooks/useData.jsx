@@ -1,11 +1,5 @@
-import { isClient, isServer } from "../utils";
+import { isClient } from "../utils";
 import { useRequestId } from "./useRequestId";
-
-let writeSync;
-
-if (isServer) {
-  writeSync = require("fs").writeSync;
-}
 
 const store = {};
 
@@ -74,6 +68,6 @@ const fetchData = (id) =>
     // This is needed because both console.log
     // and stdout.write are NON blocking and here
     // we need a blocking behavior
-    writeSync(1, `Data ${id} fetched!`);
+    console.log(`Data ${id} fetched!`);
     return res.text();
   });

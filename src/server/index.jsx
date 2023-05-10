@@ -1,5 +1,4 @@
 import express from "express";
-import { createWriteStream } from "node:fs";
 import { Worker } from "node:worker_threads";
 import { resolve } from "path";
 
@@ -9,8 +8,8 @@ const resolvers = {
   shellData: undefined,
   shell: undefined,
   data: {},
-  html: {},
-  bundle: undefined,
+  bundle: {},
+  initialBundle: undefined,
 };
 
 const setArrayBufferCompatibilityHeaders = (res) => {
@@ -115,12 +114,114 @@ app.get("/data/:id", async (req, res) => {
 
 app.get("/client/index.js", async (req, res) => {
   await new Promise((resolver) => {
-    resolvers.bundle = resolver;
+    resolvers.initialBundle = resolver;
   });
 
   res.setHeader("Content-Type", "application/javascript");
   res.sendFile(resolve(__dirname, "../../dist/client/index.js"));
 });
+
+app.get(
+  "/client/src_client_components_blocks_First_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["1"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_First_jsx.js"
+      )
+    );
+  }
+);
+
+app.get(
+  "/client/src_client_components_blocks_Second_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["2"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_Second_jsx.js"
+      )
+    );
+  }
+);
+
+app.get(
+  "/client/src_client_components_blocks_Third_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["3"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_Third_jsx.js"
+      )
+    );
+  }
+);
+
+app.get(
+  "/client/src_client_components_blocks_Fourth_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["4"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_Fourth_jsx.js"
+      )
+    );
+  }
+);
+
+app.get(
+  "/client/src_client_components_blocks_Fifth_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["5"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_Fifth_jsx.js"
+      )
+    );
+  }
+);
+
+app.get(
+  "/client/src_client_components_blocks_Sixth_jsx.js",
+  async (req, res) => {
+    await new Promise((resolver) => {
+      resolvers.bundle["6"] = resolver;
+    });
+
+    res.setHeader("Content-Type", "application/javascript");
+    res.sendFile(
+      resolve(
+        __dirname,
+        "../../dist/client/src_client_components_blocks_Sixth_jsx.js"
+      )
+    );
+  }
+);
 
 const sseConnections = [];
 
@@ -181,8 +282,16 @@ app.get("/remote-control/render/:id", (req, res) => {
   res.send("Ok");
 });
 
-app.get("/remote-control/bundle", (req, res) => {
-  resolvers.bundle();
+app.get("/remote-control/initialBundle", (req, res) => {
+  resolvers.initialBundle();
+
+  res.send("Ok");
+});
+
+app.get("/remote-control/bundle/:id", (req, res) => {
+  const { id } = req.params;
+
+  resolvers.bundle[id]();
 
   res.send("Ok");
 });

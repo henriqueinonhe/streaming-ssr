@@ -7,8 +7,8 @@ let serverWorkerData;
 let writeSync;
 
 if (isServer) {
-  serverWorkerData = require("worker_threads").workerData;
-  writeSync = require("fs").writeSync;
+  serverWorkerData = eval("require")("worker_threads").workerData;
+  writeSync = eval("require")("fs").writeSync;
 }
 
 export const Block = ({ id }) => {
